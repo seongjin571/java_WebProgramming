@@ -24,7 +24,6 @@ public class MemberUpdateServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		ServletContext ctx = this.getServletContext();
-		request.setCharacterEncoding("UTF-8");
 		
 		int mno = 0;
 		String name = null;
@@ -84,7 +83,6 @@ public class MemberUpdateServlet extends HttpServlet {
 	}
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		request.setCharacterEncoding("UTF-8");
 		response.setContentType("text/html; charset=UTF-8");
 		try {
 			ServletContext ctx = this.getServletContext();
