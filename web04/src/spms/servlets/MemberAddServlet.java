@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -38,12 +39,11 @@ public class MemberAddServlet extends HttpServlet {
 		request.setCharacterEncoding("UTF-8");
 		Connection conn = null;
 		PreparedStatement stmt = null;
+		ServletContext ctx = this.getServletContext();
 
 		try {
-			DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-			conn = DriverManager.getConnection("jdbc:mysql://localhost/javaweb?characterEncoding=UTF-8&serverTimezone=UTC", // JDBC URL
-					"root", // DBMS 사용자 아이디
-					"7dnjf29dlf!"); // DBMS 사용자 암호
+			Class.forName(ctx.getInitParameter("driver"));
+			conn = DriverManager.getConnection(ctx.getInitParameter("url"), ctx.getInitParameter("username"), ctx.getInitParameter("password"));
 			stmt = conn.prepareStatement(
 					"INSERT INTO MEMBERS(EMAIL,PWD,MNAME,CRE_DATE,MOD_DATE)" + " VALUES (?,?,?,NOW(),NOW())");
 			stmt.setString(1, request.getParameter("email"));
@@ -57,6 +57,7 @@ public class MemberAddServlet extends HttpServlet {
 			out.println("<body>");
 			out.println("<p>등록 성공입니다!</p>");
 			out.println("</body></html>");
+			response.sendRedirect("list");
 
 		} catch (Exception e) {
 			throw new ServletException(e);

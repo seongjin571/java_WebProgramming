@@ -7,28 +7,30 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
-import javax.servlet.GenericServlet;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/member/list")
-public class MemberListServlet extends GenericServlet {
+public class MemberListServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 1L;
-	private static String dburl = "jdbc:mysql://localhost/javaweb?characterEncoding=UTF-8&serverTimezone=UTC";
-	private static String dbUser = "root";
-	private static String dbpasswd = "7dnjf29dlf!";
 
 	@Override
-	public void service(ServletRequest reeuqest, ServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		ResultSet rs = null;
 		try {
-			Class.forName("com.mysql.cj.jdbc.Driver");
-			conn = DriverManager.getConnection(dburl, dbUser, dbpasswd);
+			ServletContext ctx = this.getServletContext();
+			Class.forName(ctx.getInitParameter("driver"));
+			conn = DriverManager.getConnection(ctx.getInitParameter("url"), ctx.getInitParameter("username"), ctx.getInitParameter("password"));
 			String sql = "select MNO,MNAME,EMAIL,CRE_DATE from MEMBERS order by MNO ASC";
 			stmt = conn.prepareStatement(sql);
 			rs = stmt.executeQuery();
@@ -38,8 +40,14 @@ public class MemberListServlet extends GenericServlet {
 			out.println("<h1>회원 목록</h1>");
 			out.println("<p><a href='add'>신규 회원</a></p>");
 			while (rs.next()) {
-				out.println(rs.getInt("MNO") + "," + rs.getString("MNAME") + "," + rs.getString("EMAIL") + ","
-						+ rs.getString("CRE_DATE") + "<BR>");
+				out.println(
+						rs.getInt("MNO") + "," +
+						"<a href='update?no=" + rs.getInt("MNO") + "'>" +
+						rs.getString("MNAME") + "</a>," +
+						rs.getString("EMAIL") + "," + 
+						rs.getDate("CRE_DATE") + 
+						"<a href='delete?no=" + rs.getInt("MNO") + 
+						"'>[삭제]</a><br>");
 			}
 			out.println("</body></html>");
 		} catch (Exception e) {
