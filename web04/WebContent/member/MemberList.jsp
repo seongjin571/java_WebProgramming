@@ -12,8 +12,8 @@
 	</head>
 	<body>
 		<jsp:include page="/Header.jsp"/>
+		<jsp:useBean id="members" scope="request" class="java.util.ArrayList" type="java.util.ArrayList<dto.Member>"/>
 		<%
-			List<Member> members = (ArrayList<Member>)request.getAttribute("members");
 			for(Member member : members){
 		%>
 				<%=member.getNo()%>,

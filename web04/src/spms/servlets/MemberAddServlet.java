@@ -1,11 +1,10 @@
 package spms.servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -20,17 +19,9 @@ public class MemberAddServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.setContentType("text/html; charset=UTF-8");
-		PrintWriter out = response.getWriter();
-		out.println("<html><head><title>회원 등록</title></head>");
-		out.println("<body><h1>회원 등록</h1>");
-		out.println("<form action='add' method='post'>");
-		out.println("이름: <input type='text' name='name'><br>");
-		out.println("이메일: <input type='text' name='email'><br>");
-		out.println("암호: <input type='password' name='password'><br>");
-		out.println("<input type='submit' value='추가'>");
-		out.println("<input type='reset' value='취소'>");
-		out.println("</form>");
-		out.println("</body></html>");
+		RequestDispatcher rd = request.getRequestDispatcher("../member/MemberForm.jsp");
+		rd.forward(request, response);
+
 	}
 
 	@Override
@@ -41,8 +32,8 @@ public class MemberAddServlet extends HttpServlet {
 		ServletContext ctx = this.getServletContext();
 
 		try {
-			Class.forName(ctx.getInitParameter("driver"));
-			conn = DriverManager.getConnection(ctx.getInitParameter("url"), ctx.getInitParameter("username"), ctx.getInitParameter("password"));
+			ServletContext sc = this.getServletContext();
+			conn = (Connection)sc.getAttribute("conn");
 			stmt = conn.prepareStatement(
 					"INSERT INTO MEMBERS(EMAIL,PWD,MNAME,CRE_DATE,MOD_DATE)" + " VALUES (?,?,?,NOW(),NOW())");
 			stmt.setString(1, request.getParameter("email"));
@@ -51,25 +42,17 @@ public class MemberAddServlet extends HttpServlet {
 			stmt.executeUpdate();
 
 			response.setContentType("text/html; charset=UTF-8");
-			PrintWriter out = response.getWriter();
-			out.println("<html><head><title>회원등록결과</title></head>");
-			out.println("<body>");
-			out.println("<p>등록 성공입니다!</p>");
-			out.println("</body></html>");
 			response.sendRedirect("list");
 
 		} catch (Exception e) {
-			throw new ServletException(e);
+			request.setAttribute("error", e);
+			RequestDispatcher rd = request.getRequestDispatcher("Error.jsp");
+			rd.forward(request, response);
 
 		} finally {
 			try {
 				if (stmt != null)
 					stmt.close();
-			} catch (Exception e) {
-			}
-			try {
-				if (conn != null)
-					conn.close();
 			} catch (Exception e) {
 			}
 		}

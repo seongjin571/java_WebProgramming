@@ -32,9 +32,7 @@ public class MemberListServlet extends HttpServlet {
 		ResultSet rs = null;
 		try {
 			ServletContext ctx = this.getServletContext();
-			Class.forName(ctx.getInitParameter("driver"));
-			conn = DriverManager.getConnection(ctx.getInitParameter("url"), ctx.getInitParameter("username"),
-					ctx.getInitParameter("password"));
+			conn = (Connection)ctx.getAttribute("conn");
 			String sql = "select MNO,MNAME,EMAIL,CRE_DATE from MEMBERS order by MNO ASC";
 			stmt = conn.prepareStatement(sql);
 			rs = stmt.executeQuery();
@@ -58,10 +56,6 @@ public class MemberListServlet extends HttpServlet {
 			}
 			try {
 				stmt.close();
-			} catch (Exception e) {
-			}
-			try {
-				conn.close();
 			} catch (Exception e) {
 			}
 
