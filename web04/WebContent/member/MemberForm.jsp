@@ -9,7 +9,6 @@
 	</head>
 	
 	<body>
-		
 		<h1>회원 등록</h1>
 		<form action="add" method="post">
 			이름: <input type='text' name='name'><br>

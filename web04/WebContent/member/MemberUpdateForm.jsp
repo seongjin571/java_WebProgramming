@@ -10,7 +10,7 @@
 	<% Member member = (Member)request.getAttribute("member"); %>
 	<body>
 		<h1>회원 수정</h1>
-		<form>
+		<form action="update" method="post">
 			번호: <input type='text' name='mno' value='<%= member.getNo() %>'><br>
 			이름: <input type='text' name='name' value='<%= member.getName() %>'><br>
 			이메일: <input type='text' name='email'value='<%= member.getEmail()%>'><br>
