@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ page import ="java.util.ArrayList" %>
 <%@ page import ="java.util.List" %>
 <%@ page import ="dto.Member" %>
@@ -12,16 +13,14 @@
 	</head>
 	<body>
 		<jsp:include page="/Header.jsp"/>
-		<jsp:useBean id="members" scope="request" class="java.util.ArrayList" type="java.util.ArrayList<dto.Member>"/>
-		<%
-			for(Member member : members){
-		%>
-				<%=member.getNo()%>,
-				<a href='update?no=<%=member.getNo()%>'><%=member.getName()%></a>,
-				<%=member.getEmail()%>,
-				<%=member.getCreateDate()%>
-				<a href='delete?no=<%=member.getNo()%>'>[삭제]</a><br>
-		<%}%>
+	
+		<c:forEach var="member" items="${requestScope.members}">
+				${member.no},
+				<a href='update?no=${member.no}'>${member.name}</a>,
+				${member.email},
+				${member.createDate}
+				<a href='delete?no=${member.no}'>[삭제]</a><br>
+		</c:forEach>
 		<jsp:include page="/Tail.jsp"/>
 	</body>
 </html>
