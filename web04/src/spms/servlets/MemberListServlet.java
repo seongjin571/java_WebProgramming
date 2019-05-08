@@ -2,11 +2,6 @@ package spms.servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -16,7 +11,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dto.Member;
+import dao.MemberDao;
 
 @WebServlet("/member/list")
 public class MemberListServlet extends HttpServlet {
@@ -26,41 +21,22 @@ public class MemberListServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-
-		Connection conn = null;
-		PreparedStatement stmt = null;
-		ResultSet rs = null;
+		
 		try {
-			ServletContext ctx = this.getServletContext();
-			conn = (Connection)ctx.getAttribute("conn");
-			String sql = "select MNO,MNAME,EMAIL,CRE_DATE from MEMBERS order by MNO ASC";
-			stmt = conn.prepareStatement(sql);
-			rs = stmt.executeQuery();
+			ServletContext sc = this.getServletContext();
+			Connection conn = (Connection)sc.getAttribute("conn");
+			MemberDao memberDao = new MemberDao(conn);
+			
+			request.setAttribute("members", memberDao.selectList());
 			response.setContentType("text/html; charset=UTF-8");
-			List<Member> members = new ArrayList<Member>();
-			while (rs.next()) {
-				members.add(new Member().setNo(rs.getInt("MNO")).setName(rs.getString("MNAME"))
-						.setEmail(rs.getString("EMAIL")).setCreateDate(rs.getDate("CRE_DATE")));
-			}
-			request.setAttribute("members", members);
 			RequestDispatcher rd = request.getRequestDispatcher("/member/MemberList.jsp");
 			rd.include(request, response);
-		} catch (Exception e) {
+		} 
+		catch (Exception e) {
 			request.setAttribute("error", e);
-			RequestDispatcher rd =request.getRequestDispatcher("/Error.jsp");
-			rd.forward(request,response);
-		} finally {
-			try {
-				rs.close();
-			} catch (Exception e) {
-			}
-			try {
-				stmt.close();
-			} catch (Exception e) {
-			}
-
+			RequestDispatcher rd = request.getRequestDispatcher("Error.jsp");
+			rd.forward(request, response);
 		}
-
 	}
 
 }
