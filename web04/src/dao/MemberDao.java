@@ -3,12 +3,14 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import javax.servlet.http.HttpSession;
 
 import dto.Member;
 
@@ -23,7 +25,6 @@ public class MemberDao {
 		this.conn = conn;
 	}
 	public List<Member> selectList() throws Exception{
-
 		
 		try {
 			String sql = "SELECT mno, mname, email, cre_date from members order by mno asc";
@@ -35,7 +36,7 @@ public class MemberDao {
 						.setEmail(rs.getString("email")).setCreateDate(rs.getDate("cre_date")));
 			}
 			return members;
-		}catch(Exception e) {
+		}catch(Exception e) { 
 			throw e;
 		}finally {
 			try{if(rs!=null) rs.close();}catch(Exception e) {}
@@ -71,11 +72,10 @@ public class MemberDao {
 	public Member selectOne(int no) throws Exception{
 		try {
 			Member member = null;
-			String sql = "select MNO,MNAME,EMAIL,CRE_DATE,PWD from MEMBERS where mno = ?";
+			String sql = "select MNO,MNAME,EMAIL,CRE_DATE,PWD from MEMBERS where mno="+no;
 			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1,no);
 			rs = stmt.executeQuery();
-			while (rs.next()) {
+			if (rs.next()) {
 				member = new Member().setNo(rs.getInt("MNO")).setName(rs.getString("MNAME")).setEmail(rs.getString("EMAIL"))
 									 .setCreateDate(rs.getDate("CRE_DATE")).setPassword(rs.getString("PWD"));
 			}
@@ -99,7 +99,7 @@ public class MemberDao {
 		}
 		
 	}
-//	
+	
 	public int update(Member member) throws Exception{
 		
 		try {
@@ -120,15 +120,59 @@ public class MemberDao {
 					stmt.close();
 			} catch (Exception e) {
 			}
+		}
+	}
+	
+	public Member exist(String email, String password) throws Exception{
+		try {
+			Member member =null;
+			String sql = "SELECT mname, email FROM members WHERE email=? and pwd=?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setString(1, email);
+			stmt.setString(2, password);
+			rs = stmt.executeQuery();
+			
+			if(rs.next()) {
+				 member = new Member().setEmail(rs.getString("email")).setName(rs.getString("mname"));
+			}
+			return member;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {	
+				try {
+					if(rs != null)
+					rs.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}try {
+					if(stmt != null)
+					stmt.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+		return null;
+	}
+	
+	public int delete(int no) throws Exception{
+		try {
+			String sql = "delete from MEMBERS where mno = ?";
+			stmt = conn.prepareStatement(sql);
+			stmt.setInt(1,no);
+			int result = stmt.executeUpdate();
+			return result;
+		} catch (Exception e) {
+			throw e;
+		} finally {
+
+			try {
+				if (stmt != null)
+					stmt.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 
 		}
 	}
-//	
-//	public Member exist(String email, String password) throws Exception{
-//		
-//	}
-
-	
-	
 
 }

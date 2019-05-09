@@ -21,8 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/member/update")
 public class MemberUpdateServlet extends HttpServlet {
 	Connection conn = null;
-	PreparedStatement stmt = null;
-	ResultSet rs = null;
+
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
