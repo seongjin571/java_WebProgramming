@@ -22,9 +22,8 @@ public class MemberDeleteServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			ServletContext ctx = this.getServletContext();
-			conn = (Connection) ctx.getAttribute("conn");
-			MemberDao memberDao = new MemberDao(conn);
+			ServletContext sc = this.getServletContext();
+			MemberDao memberDao = (MemberDao) sc.getAttribute("MemberDao");
 			memberDao.delete(Integer.parseInt(request.getParameter("no")));
 			response.sendRedirect("list");
 		} catch (Exception e) {

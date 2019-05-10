@@ -32,10 +32,10 @@ public class MemberAddServlet extends HttpServlet {
 			throws ServletException, IOException {
 		try {
 			ServletContext sc = this.getServletContext();
-			Connection conn = (Connection) sc.getAttribute("conn");
+
 			Member member = new Member().setEmail(request.getParameter("email"))
 					.setPassword(request.getParameter("password")).setName(request.getParameter("name"));
-			MemberDao memberDao = new MemberDao(conn);
+			MemberDao memberDao = (MemberDao)sc.getAttribute("memberDao");
 			memberDao.insert(member);
 			response.setContentType("text/html; charset=UTF-8");
 			response.sendRedirect("list");
