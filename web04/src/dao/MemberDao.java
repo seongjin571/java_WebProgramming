@@ -7,26 +7,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpSession;
-
 import dto.Member;
+import util.DBConnectionPool;
 
 public class MemberDao {
-	Connection conn;
 	PreparedStatement stmt = null;
 	ResultSet rs = null;
-//	public void setConnection(Connection conn) {
-//		this.conn = conn;
-//	}
-	public MemberDao(Connection conn) {
-		this.conn = conn;
+
+	DBConnectionPool connPool;
+	public void setDbConnectionPool(DBConnectionPool connPool) {
+		this.connPool = connPool;
 	}
 	public List<Member> selectList() throws Exception{
-		
+		Connection conn = null;
 		try {
+			conn = connPool.getConnection();
 			String sql = "SELECT mno, mname, email, cre_date from members order by mno asc";
 			stmt = conn.prepareStatement(sql);
 			rs = stmt.executeQuery();
@@ -42,13 +37,15 @@ public class MemberDao {
 			try{if(rs!=null) rs.close();}catch(Exception e) {}
 			
 			try{if(stmt!=null) stmt.close();}catch(Exception e) {}
+			if(conn != null) connPool.returnConnection(conn);
 		}
 		
 	}
 	
 	public int insert(Member member) throws Exception{
+		Connection conn = null;
 		try {
-			
+			conn = connPool.getConnection();
 			stmt = conn.prepareStatement(
 					"INSERT INTO MEMBERS(EMAIL,PWD,MNAME,CRE_DATE,MOD_DATE)" + " VALUES (?,?,?,NOW(),NOW())");
 			stmt.setString(1, member.getEmail());
@@ -66,11 +63,14 @@ public class MemberDao {
 					stmt.close();
 			} catch (Exception e) {
 			}
+			if(conn != null) connPool.returnConnection(conn);
 		}
 	}
 	
 	public Member selectOne(int no) throws Exception{
+		Connection conn = null;
 		try {
+			conn = connPool.getConnection();
 			Member member = null;
 			String sql = "select MNO,MNAME,EMAIL,CRE_DATE,PWD from MEMBERS where mno="+no;
 			stmt = conn.prepareStatement(sql);
@@ -95,14 +95,16 @@ public class MemberDao {
 					stmt.close();
 			} catch (Exception e) {
 			}
-
+			if(conn != null) connPool.returnConnection(conn);
 		}
 		
 	}
 	
 	public int update(Member member) throws Exception{
+		Connection conn = null;
 		
 		try {
+			conn = connPool.getConnection();
 			String sql = "Update MEMBERS set EMAIL = ?, MNAME = ?, MOD_DATE=now() where mno = ?";
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, member.getEmail());
@@ -120,11 +122,14 @@ public class MemberDao {
 					stmt.close();
 			} catch (Exception e) {
 			}
+			if(conn != null) connPool.returnConnection(conn);
 		}
 	}
 	
 	public Member exist(String email, String password) throws Exception{
+		Connection conn = null;
 		try {
+			conn = connPool.getConnection();
 			Member member =null;
 			String sql = "SELECT mname, email FROM members WHERE email=? and pwd=?";
 			stmt = conn.prepareStatement(sql);
@@ -150,12 +155,15 @@ public class MemberDao {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				if(conn != null) connPool.returnConnection(conn);
 		}
 		return null;
 	}
 	
 	public int delete(int no) throws Exception{
+		Connection conn = null;
 		try {
+			conn = connPool.getConnection();
 			String sql = "delete from MEMBERS where mno = ?";
 			stmt = conn.prepareStatement(sql);
 			stmt.setInt(1,no);
@@ -171,6 +179,7 @@ public class MemberDao {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+			if(conn != null) connPool.returnConnection(conn);
 
 		}
 	}

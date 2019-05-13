@@ -30,7 +30,7 @@ public class MemberUpdateServlet extends HttpServlet {
 			ServletContext ctx = this.getServletContext();
 			Connection conn = (Connection) ctx.getAttribute("ctx");
 			response.setContentType("text/html; charset=UTF-8");
-			MemberDao memberDao = new MemberDao(conn);
+			MemberDao memberDao = new MemberDao();
 			int no = Integer.parseInt(request.getParameter("no"));
 			request.setAttribute("member", memberDao.selectOne(no));
 
@@ -51,7 +51,7 @@ public class MemberUpdateServlet extends HttpServlet {
 			response.setContentType("text/html; charset=UTF-8");
 			ServletContext sc = this.getServletContext();
 			Connection conn = (Connection) sc.getAttribute("conn");
-			MemberDao memberDao = new MemberDao(conn);
+			MemberDao memberDao = new MemberDao();
 			Member member = new Member().setEmail(request.getParameter("email")).setName(request.getParameter("name"))
 					.setNo(Integer.parseInt(request.getParameter("no")));
 
