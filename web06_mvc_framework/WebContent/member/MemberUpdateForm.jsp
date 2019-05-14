@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ page import="dto.Member" %>  
+<%@ page import="spms.dto.Member" %>  
 <!DOCTYPE html>
 <html>
 	<head>
@@ -9,7 +9,7 @@
 	</head>
 	<body>
 		<h1>회원 수정</h1>
-		<form action="update" method="post">
+		<form action="update.do" method="post">
 			번호: <input type='text' name='mno' value='${requestScope.member.no}'><br>
 			이름: <input type='text' name='name' value='${requestScope.member.name}'><br>
 			이메일: <input type='text' name='email'value='${requestScope.member.email}'><br>

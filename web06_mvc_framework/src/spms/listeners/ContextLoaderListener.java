@@ -1,4 +1,4 @@
-package listeners;
+package spms.listeners;
 
 import java.sql.SQLException;
 
@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebListener;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
-import dao.MemberDao;
+import spms.dao.MemberDao;
 
 @WebListener
 public class ContextLoaderListener implements ServletContextListener {

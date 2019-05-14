@@ -1,8 +1,8 @@
-package spms.servlets;
+package spms.servlet;
 
 import java.io.IOException;
-import dao.MemberDao;
-import dto.Member;
+import spms.dao.MemberDao;
+import spms.dto.Member;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,27 +20,18 @@ import javax.servlet.http.HttpServletResponse;
 @SuppressWarnings("serial")
 @WebServlet("/member/update")
 public class MemberUpdateServlet extends HttpServlet {
-	Connection conn = null;
-
 
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			ServletContext ctx = this.getServletContext();
-			Connection conn = (Connection) ctx.getAttribute("ctx");
-			response.setContentType("text/html; charset=UTF-8");
-			MemberDao memberDao = new MemberDao();
+			ServletContext sc = this.getServletContext();
+			MemberDao memberDao = (MemberDao)sc.getAttribute("memberDao");
 			int no = Integer.parseInt(request.getParameter("no"));
 			request.setAttribute("member", memberDao.selectOne(no));
-
-			RequestDispatcher rd = request.getRequestDispatcher("../member/MemberUpdateForm.jsp");
-			rd.forward(request, response);
+			request.setAttribute("viewUrl", "/member/MemberUpdateForm.jsp");
 		} catch (Exception e) {
-			e.printStackTrace();
-			request.setAttribute("error", e);
-			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-			rd.forward(request, response);
+			throw new ServletException(e);
 		}
 	}
 
@@ -52,16 +43,13 @@ public class MemberUpdateServlet extends HttpServlet {
 			ServletContext sc = this.getServletContext();
 			Connection conn = (Connection) sc.getAttribute("conn");
 			MemberDao memberDao = new MemberDao();
-			Member member = new Member().setEmail(request.getParameter("email")).setName(request.getParameter("name"))
-					.setNo(Integer.parseInt(request.getParameter("no")));
-
+			Member member = (Member) request.getAttribute("member");
 			memberDao.update(member);
-			response.sendRedirect("list");
+			request.setAttribute("viewUrl", "member/MemberList.jsp");
+	
 
 		} catch (Exception e) {
-			request.setAttribute("error", e);
-			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-			rd.forward(request, response);
+			throw new ServletException(e);
 		}
 
 	}

@@ -1,4 +1,4 @@
-package spms.servlets;
+package spms.servlet;
 
 import java.io.IOException;
 
@@ -16,6 +16,6 @@ public class LogoutServlet extends HttpServlet{
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		HttpSession session = request.getSession();
 		session.invalidate();
-		response.sendRedirect("login");
+		request.setAttribute("viewUrl", "redirect:/web06_mvc_framework/auth/login.do");
 	}
 }

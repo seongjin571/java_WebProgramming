@@ -1,4 +1,4 @@
-package spms.servlets;
+package spms.servlet;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -12,8 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import dao.MemberDao;
-import dto.Member;
+import spms.dao.MemberDao;
+import spms.dto.Member;
 
 @SuppressWarnings("serial")
 @WebServlet("/auth/login")
@@ -21,14 +21,12 @@ public class LoginServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		RequestDispatcher rd = request.getRequestDispatcher("/auth/LoginForm.jsp");
-		rd.forward(request, response);
+		request.setAttribute("viewUrl", "/auth/LoginForm.jsp");
 	}
 
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		Connection conn = null;
 		try {
 			ServletContext sc = this.getServletContext();
 			MemberDao memberDao = (MemberDao) sc.getAttribute("memberDao");
@@ -37,16 +35,13 @@ public class LoginServlet extends HttpServlet {
 
 			if (member != null) {
 				session.setAttribute("member", member);
-				response.sendRedirect("../member/list");
+				request.setAttribute("viewUrl", "redirect:/web06_mvc_framework/member/list.do");
 			} else {
-				RequestDispatcher rd = request.getRequestDispatcher("/auth/LoginFail.jsp");
-				rd.forward(request, response);
+				request.setAttribute("viewUrl", "/auth/LoginFail.jsp");
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			request.setAttribute("error", e);
-			RequestDispatcher rd = request.getRequestDispatcher("/Error.jsp");
-			rd.forward(request, response);
+			throw new ServletException(e);
 		}
 
 	}

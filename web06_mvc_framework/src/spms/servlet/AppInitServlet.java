@@ -1,4 +1,4 @@
-package spms.servlets;
+package spms.servlet;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

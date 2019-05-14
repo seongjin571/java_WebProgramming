@@ -1,4 +1,4 @@
-package dao;
+package spms.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -9,7 +9,7 @@ import java.util.List;
 
 import javax.sql.DataSource;
 
-import dto.Member;
+import spms.dto.Member;
 
 public class MemberDao {
 	PreparedStatement stmt = null;
@@ -110,7 +110,7 @@ public class MemberDao {
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, member.getEmail());
 			stmt.setString(2, member.getName());
-			stmt.setString(3, member.getName());
+			stmt.setInt(3, member.getNo());
 			int result = stmt.executeUpdate();
 			return result;
 			

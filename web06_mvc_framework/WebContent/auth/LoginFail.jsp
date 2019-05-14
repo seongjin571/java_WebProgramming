@@ -3,7 +3,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-	<meta http-equiv="Refresh" content="1;url=login" charset="UTF-8">
+	<meta http-equiv="Refresh" content="1;url=login.do" charset="UTF-8">
 	<title>Insert title here</title>
 	</head>
 	
