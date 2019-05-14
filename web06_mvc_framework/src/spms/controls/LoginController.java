@@ -4,10 +4,11 @@ import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
+import spms.bind.DataBinding;
 import spms.dao.MysqlMemberDao;
 import spms.dto.Member;
 
-public class LoginController implements Controller {
+public class LoginController implements Controller, DataBinding {
 	MysqlMemberDao memberDao;
 	public LoginController setMemberDao(MysqlMemberDao memberDao) {
 		this.memberDao = memberDao;
@@ -28,6 +29,12 @@ public class LoginController implements Controller {
 				return "/auth/LoginFail.jsp";
 			}
 			
+		}
+	}
+	@Override
+	public Object[] getDataBinders() {
+		return new Object[] {
+				
 		}
 	}
 
