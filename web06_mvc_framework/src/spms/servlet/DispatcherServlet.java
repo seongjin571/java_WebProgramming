@@ -31,20 +31,17 @@ public class DispatcherServlet extends HttpServlet {
 		try {
 			ServletContext sc = this.getServletContext();
 			HashMap<String,Object> model = new HashMap<String,Object>();
-			model.put("memberDao",sc.getAttribute("memberDao"));
 			model.put("session",request.getSession());
 			
-			Controller pageController = null;
-			if ("/member/list.do".equals(servletPath)) {
-				pageController = new MemberListController();
-			} else if ("/member/add.do".equals(servletPath)) {
-				pageController = new MemberAddController();
+			Controller pageController = (Controller)sc.getAttribute(servletPath);
+			
+			if ("/member/add.do".equals(servletPath)) {
+
 				if (request.getParameter("email") != null) {
 					model.put("member", new Member().setEmail(request.getParameter("email"))
 							.setPassword(request.getParameter("password")).setName(request.getParameter("name")));
 				}
 			} else if ("/member/update.do".equals(servletPath)) {
-				pageController = new MemberUpdateController();
 				if (request.getParameter("email") != null) {
 					model.put("member", new Member().setNo(Integer.parseInt(request.getParameter("mno")))
 							.setEmail(request.getParameter("email")).setName(request.getParameter("name")));
@@ -53,21 +50,17 @@ public class DispatcherServlet extends HttpServlet {
 					model.put("no",request.getParameter("no"));
 				}
 			} else if ("/member/delete.do".equals(servletPath)) {
-				pageController = new MemberDeleteController();
+
 				model.put("no",request.getParameter("no"));
 			} else if ("/auth/login.do".equals(servletPath)) {
-				pageController = new LoginController();
+
 				if (request.getParameter("email") != null) {
 					model.put("email", request.getParameter("email"));
 					model.put("password",request.getParameter("password"));
 				}
-			} else if ("/auth/logout.do".equals(servletPath)) {
-				pageController = new LogoutController();
+			} 
 
-			}
-
-
-
+			
 			String viewUrl = pageController.execute(model);
 			for(String key : model.keySet()) {
 				request.setAttribute(key, model.get(key));

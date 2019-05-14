@@ -9,24 +9,28 @@ import javax.servlet.annotation.WebListener;
 
 import org.apache.commons.dbcp.BasicDataSource;
 
-import spms.dao.MemberDao;
+import spms.controls.LoginController;
+import spms.controls.LogoutController;
+import spms.controls.MemberAddController;
+import spms.controls.MemberDeleteController;
+import spms.controls.MemberListController;
+import spms.controls.MemberUpdateController;
+import spms.dao.MysqlMemberDao;
 
 @WebListener
 public class ContextLoaderListener implements ServletContextListener {
-//	DBConnectionPool connPool;
 	BasicDataSource ds;
 
 	@Override
 	public void contextDestroyed(ServletContextEvent arg0) {
-//		connPool.closeAll();
-			try {
-				if(ds != null)
+		try {
+			if (ds != null)
 				ds.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
- 
+
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		try {
@@ -37,9 +41,14 @@ public class ContextLoaderListener implements ServletContextListener {
 			ds.setUsername(sc.getInitParameter("username"));
 			ds.setPassword(sc.getInitParameter("password"));
 			
-			MemberDao memberDao = new MemberDao();
+			MysqlMemberDao memberDao = new MysqlMemberDao();
 			memberDao.setDataSource(ds);
-			sc.setAttribute("memberDao", memberDao);
+			sc.setAttribute("/auth/login.do", new LoginController().setMemberDao(memberDao));
+			sc.setAttribute("/auth/logout.do", new LogoutController());
+			sc.setAttribute("/member/list.do", new MemberListController().setMemberDao(memberDao));
+			sc.setAttribute("/member/add.do", new MemberAddController().setMemberDao(memberDao));
+			sc.setAttribute("/member/update.do", new MemberUpdateController().setMemberDao(memberDao));
+			sc.setAttribute("/member/delete.do", new MemberDeleteController().setMemberDao(memberDao));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
