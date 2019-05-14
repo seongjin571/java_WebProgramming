@@ -27,10 +27,8 @@ public class MemberUpdateServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		try {
-			ServletContext ctx = this.getServletContext();
-			Connection conn = (Connection) ctx.getAttribute("ctx");
-			response.setContentType("text/html; charset=UTF-8");
-			MemberDao memberDao = new MemberDao();
+			ServletContext sc = this.getServletContext();
+			MemberDao memberDao = (MemberDao)sc.getAttribute("memberDao");
 			int no = Integer.parseInt(request.getParameter("no"));
 			request.setAttribute("member", memberDao.selectOne(no));
 
@@ -50,10 +48,9 @@ public class MemberUpdateServlet extends HttpServlet {
 		try {
 			response.setContentType("text/html; charset=UTF-8");
 			ServletContext sc = this.getServletContext();
-			Connection conn = (Connection) sc.getAttribute("conn");
-			MemberDao memberDao = new MemberDao();
+			MemberDao memberDao = (MemberDao)sc.getAttribute("memberDao");
 			Member member = new Member().setEmail(request.getParameter("email")).setName(request.getParameter("name"))
-					.setNo(Integer.parseInt(request.getParameter("no")));
+					.setNo(Integer.parseInt(request.getParameter("mno")));
 
 			memberDao.update(member);
 			response.sendRedirect("list");

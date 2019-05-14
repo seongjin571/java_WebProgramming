@@ -110,7 +110,7 @@ public class MemberDao {
 			stmt = conn.prepareStatement(sql);
 			stmt.setString(1, member.getEmail());
 			stmt.setString(2, member.getName());
-			stmt.setString(3, member.getName());
+			stmt.setInt(3, member.getNo());
 			int result = stmt.executeUpdate();
 			return result;
 			
@@ -165,9 +165,8 @@ public class MemberDao {
 		Connection conn = null;
 		try {
 			conn = ds.getConnection();
-			String sql = "delete from MEMBERS where mno = ?";
+			String sql = "delete from MEMBERS where mno ="+ no;
 			stmt = conn.prepareStatement(sql);
-			stmt.setInt(1,no);
 			int result = stmt.executeUpdate();
 			return result;
 		} catch (Exception e) {
@@ -186,3 +185,6 @@ public class MemberDao {
 	}
 
 }
+
+
+
