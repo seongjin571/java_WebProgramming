@@ -34,8 +34,8 @@ public class LoginController implements Controller, DataBinding {
 	@Override
 	public Object[] getDataBinders() {
 		return new Object[] {
-				
-		}
+				"email",String.class,"password",String.class
+		};
 	}
 
 }

@@ -1,7 +1,6 @@
 package spms.controls;
 
 import java.util.Map;
-
 import spms.dao.MysqlMemberDao;
 
 public class MemberListController implements Controller{
